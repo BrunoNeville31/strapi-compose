@@ -1,4 +1,4 @@
-version: '3'
+version: '3' 
 
 volumes:
   postgres_data:  
@@ -8,17 +8,17 @@ services:
     image: postgres:15
     restart: always
     ports:
-      - 5428:5432
+      - 5429:5432
     environment:
       POSTGRES_USER: jsj
       POSTGRES_PASSWORD: jaimezeroone321
     volumes: 
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - souzabank
+      - strapi
 
   strapi:
-    container_name: strapi_souzabank
+    container_name: strapi_odonto
     image: strapi:latest
     restart: unless-stopped
     build: .
@@ -38,12 +38,12 @@ services:
     volumes:
       - .:/opt/app
     ports:
-      - 1336:1337
+      - "1337:1337"
     networks:
-      - souzabank
+      - strapi
     depends_on:
       - postgres
 
 networks:
-  souzabank:
+  strapi:
     driver: bridge
