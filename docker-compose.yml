@@ -1,0 +1,49 @@
+version: '3'
+
+volumes:
+  postgres_data:  
+
+services:
+  postgres:
+    image: postgres:15
+    restart: always
+    ports:
+      - 5428:5432
+    environment:
+      POSTGRES_USER: jsj
+      POSTGRES_PASSWORD: jaimezeroone321
+    volumes: 
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - souzabank
+
+  strapi:
+    container_name: strapi_souzabank
+    image: strapi:latest
+    restart: unless-stopped
+    build: .
+    command: npm run develop
+    env_file: .env
+    environment:
+      DATABASE_CLIENT: ${DATABASE_CLIENT}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
+      APP_KEYS: ${APP_KEYS}
+      NODE_ENV: ${NODE_ENV}
+    volumes:
+      - .:/opt/app
+    ports:
+      - 1336:1337
+    networks:
+      - souzabank
+    depends_on:
+      - postgres
+
+networks:
+  souzabank:
+    driver: bridge
